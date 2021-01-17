@@ -62,18 +62,27 @@ namespace EasyCRM.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateNewAccount([FromBody] AccountCreationDTO accountForCreation)
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+        [HttpPost]
+        public async Task<IActionResult> CreateNewAccount([FromBody] AccountCreationDTO accountForCreation)
+        {
+            try
+            {
+                var acc = mapper.Map<Account>(accountForCreation);
+                var result = await accountManager.CreateAccount(acc);
+
+                if (result == true)
+                {
+                    var accountToReturn = mapper.Map<AccountToReturnDTO>(acc);
+                    return CreatedAtRoute("GetAccount", new { Id = accountToReturn.AccountId }, accountToReturn);
+                }
+
+                return BadRequest("Given Account could not be added.");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> EditAccountInfo(int id, [FromBody] AccountEditDTO accountEditDTO)
