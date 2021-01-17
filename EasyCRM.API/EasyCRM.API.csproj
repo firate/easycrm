@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EasyCRM.Business\EasyCRM.Business.csproj" />
+    <ProjectReference Include="..\EasyCRM.Entity\EasyCRM.Entity.csproj" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
