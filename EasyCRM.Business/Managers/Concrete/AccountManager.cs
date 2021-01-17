@@ -36,12 +36,19 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                await dataContext.Accounts.AddAsync(account);
-                var result = await dataContext.SaveChangesAsync();
-                if (result > 0)
+                var accountType = await dataContext.AccountTypes.Where(at => at.Id == account.AccountTypeId).FirstOrDefaultAsync();
+                if(accountType != null)
                 {
-                    return true;
+                    await dataContext.Accounts.AddAsync(account);
+                    var result = await dataContext.SaveChangesAsync();
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    return false;
                 }
+                
                 return false;
 
             }
@@ -53,12 +60,12 @@ namespace EasyCRM.Business.Managers.Concrete
 
         }
 
-        public Task<bool> DeleteManager(Account account)
+        public Task<bool> DeleteAccount(Account account)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> EditManager(Account account)
+        public Task<bool> EditAccount(Account account)
         {
             throw new NotImplementedException();
         }

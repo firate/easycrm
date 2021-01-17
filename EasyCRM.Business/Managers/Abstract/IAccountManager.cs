@@ -11,8 +11,8 @@ namespace EasyCRM.Business.Managers.Abstract
         
         Task<bool> CreateAccount(Account account);
         Task<Account> GetAccount(int id);
-        Task<bool> EditManager(Account account);
-        Task<bool> DeleteManager(Account account);
+        Task<bool> EditAccount(Account account);
+        Task<bool> DeleteAccount(Account account);
         Task<List<Account>> GetAccounts();
         Task<List<Account>> GetAccountsByName();
  
