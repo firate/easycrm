@@ -1,2 +1,2 @@
 # easycrm
-I'm working on this project for purposes of learning product development. 
+I'm working on this project to learn product development.
