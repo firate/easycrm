@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using EasyCRM.Utility;
 
 namespace EasyCRM.Business.Managers.Abstract
 {
@@ -13,8 +14,7 @@ namespace EasyCRM.Business.Managers.Abstract
         Task<Account> GetAccount(int id);
         Task<bool> EditAccount(Account account);
         Task<bool> DeleteAccount(Account account);
-        Task<List<Account>> GetAccounts();
-        Task<List<Account>> GetAccountsByName();
+        Task<PagedList<Account>> SearchAccounts(AccountParams accountParams);
  
         
     }

@@ -18,19 +18,6 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             dataContext = _dataContext;
         }
-        public async Task<PagedList<Account>> SearchAccounts()
-        {
-            try
-            {
-                throw new NotImplementedException();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
 
         public async Task<bool> CreateAccount(Account account)
         {
@@ -86,14 +73,33 @@ namespace EasyCRM.Business.Managers.Concrete
             }
         }
 
-        public Task<List<Account>> GetAccounts()
+        public async Task<PagedList<Account>> SearchAccounts(AccountParams accountParams)
         {
-            throw new NotImplementedException();
-        }
+            var accounts = dataContext.Accounts.Include(a=>a.AccountType).Include(a=>a.Contacts).AsQueryable();
 
-        public Task<List<Account>> GetAccountsByName()
-        {
-            throw new NotImplementedException();
+            if(accountParams.AccountId > 0)
+            {
+                accounts = accounts.Where(a=>a.AccountId==accountParams.AccountId);
+                return await PagedList<Account>.CreateAsync(accounts, accountParams.PageNumber,accountParams.PageSize);
+            }
+
+            if (!String.IsNullOrEmpty(accountParams.OrganizationName))
+            {
+                accounts= accounts.Where(a => a.OrganizationName.Contains(accountParams.OrganizationName));
+            }
+
+            if (!String.IsNullOrEmpty(accountParams.AccountType))
+            {
+                accounts = accounts.Where(a => a.AccountType.Name.Contains(accountParams.AccountType));
+            }
+
+            if (!String.IsNullOrEmpty(accountParams.Description))
+            {
+                accounts = accounts.Where(a=>a.Description.Contains(accountParams.Description));
+            }
+
+            return await PagedList<Account>.CreateAsync(accounts,accountParams.PageNumber, accountParams.PageSize);
+
         }
     }
 }

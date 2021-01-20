@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System;
 using EasyCRM.Entity.Models;
 using EasyCRM.API.DTOs;
+using EasyCRM.Utility;
+using System.Collections.Generic;
 
 namespace EasyCRM.Controllers
 {
@@ -22,23 +24,75 @@ namespace EasyCRM.Controllers
         {
             accountManager = _accountManager;
             mapper = _mapper;
+            
 
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> SearchAccounts([FromQuery] AccountParams accountParams)
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception)
-        //    {
+        [HttpGet]
+        public async Task<IActionResult> SearchAccounts([FromQuery] AccountParams accountParams)
+        {
+            try
+            {
+                var accounts = await accountManager.SearchAccounts(accountParams);
 
-        //        throw;
-        //    }
+                if(accounts != null )
+                {
+                    PagedList<AccountToReturnDTO> accountToReturns = new PagedList<AccountToReturnDTO>();
 
-        //}
+                    foreach(var acc in accounts)
+                    {
+                        var contacts = acc.Contacts;
+
+                        List<ContactReturnDTO> contactsToReturn = new List<ContactReturnDTO>();
+                        
+                        foreach(var c in contacts)
+                        {
+                            ContactReturnDTO contact = new ContactReturnDTO()
+                            {
+
+                                ContactId=c.ContactId,
+                                FirstName = c.FirstName,
+                                MiddleName = c.MiddleName,
+                                LastName= c.LastName,
+                                NameTitle= c.NameTitle,
+                                SelectedAddressId=c.SelectedAddressId,
+                                AccountId=c.AccountId.Value,
+                                Notes = c.Notes
+                                
+                            };
+
+                            contactsToReturn.Add(contact);
+                        }
+
+                        AccountToReturnDTO accountsToReturn = new AccountToReturnDTO
+                        {
+                            AccountId=acc.AccountId,
+                            OrganizationName= acc.OrganizationName,
+                            AccountType=acc.AccountType.Name,
+                            Description= acc.Description,
+                            CreatedAt= acc.CreatedAt,
+                            UpdatedAt =acc.UpdatedAt,
+                            Contacts = contactsToReturn
+                        };
+
+                        accountToReturns.Add(accountsToReturn);
+                    }
+
+
+                    Response.AddPagination(accountToReturns.CurrentPage, accountToReturns.PageSize, accountToReturns.TotalCount, accountToReturns.TotalPages);
+                    
+                    return Ok(accountToReturns);
+                }
+
+                return NotFound("Not Found!");
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
 
         [HttpGet("{id}", Name = "GetAccount")]
         public async Task<IActionResult> GetAccountById(int id)
