@@ -546,16 +546,16 @@ namespace EasyCRM.Data.Migrations
                     Description = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    AccountId = table.Column<int>(nullable: true),
-                    ContactId = table.Column<int>(nullable: true),
-                    LeadId = table.Column<int>(nullable: true)
+                    AccountID = table.Column<int>(nullable: true),
+                    ContactID = table.Column<int>(nullable: true),
+                    LeadID = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CommunicationInfos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_CommunicationInfos_Accounts_AccountId",
-                        column: x => x.AccountId,
+                        name: "FK_CommunicationInfos_Accounts_AccountID",
+                        column: x => x.AccountID,
                         principalTable: "Accounts",
                         principalColumn: "AccountID",
                         onDelete: ReferentialAction.Restrict);
@@ -566,14 +566,14 @@ namespace EasyCRM.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CommunicationInfos_Contacts_ContactId",
-                        column: x => x.ContactId,
+                        name: "FK_CommunicationInfos_Contacts_ContactID",
+                        column: x => x.ContactID,
                         principalTable: "Contacts",
                         principalColumn: "ContactID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CommunicationInfos_Leads_LeadId",
-                        column: x => x.LeadId,
+                        name: "FK_CommunicationInfos_Leads_LeadID",
+                        column: x => x.LeadID,
                         principalTable: "Leads",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -590,6 +590,17 @@ namespace EasyCRM.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "CommunicationTypes",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[,]
+                {
+                    { 1, "E-Mail", "email" },
+                    { 2, "Phone", "phone" },
+                    { 3, "Fax", "fax" },
+                    { 4, "", "www" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Countries",
                 columns: new[] { "Id", "Code", "Name", "Note" },
                 values: new object[] { 1, "TR", "Turkey", "" });
@@ -597,7 +608,12 @@ namespace EasyCRM.Data.Migrations
             migrationBuilder.InsertData(
                 table: "Accounts",
                 columns: new[] { "AccountID", "AccountTypeID", "CreatedAt", "Description", "OrganizationName", "UpdatedAt" },
-                values: new object[] { 1, 1, new DateTime(2021, 1, 13, 23, 13, 22, 638, DateTimeKind.Local).AddTicks(8579), "uuu", "Microsoft", new DateTime(2021, 1, 13, 23, 13, 22, 639, DateTimeKind.Local).AddTicks(6882) });
+                values: new object[] { 1, 1, new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(453), "uuu", "Microsoft", new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(8719) });
+
+            migrationBuilder.InsertData(
+                table: "Addresses",
+                columns: new[] { "Id", "AccountID", "AddressLine", "AddressTitle", "CountryID", "IsMain", "PostalCode", "State" },
+                values: new object[] { 1, 1, null, null, 1, true, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_AccountTypeID",
@@ -659,9 +675,9 @@ namespace EasyCRM.Data.Migrations
                 column: "UserTypeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommunicationInfos_AccountId",
+                name: "IX_CommunicationInfos_AccountID",
                 table: "CommunicationInfos",
-                column: "AccountId");
+                column: "AccountID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CommunicationInfos_CommunicationTypeId",
@@ -669,14 +685,14 @@ namespace EasyCRM.Data.Migrations
                 column: "CommunicationTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommunicationInfos_ContactId",
+                name: "IX_CommunicationInfos_ContactID",
                 table: "CommunicationInfos",
-                column: "ContactId");
+                column: "ContactID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CommunicationInfos_LeadId",
+                name: "IX_CommunicationInfos_LeadID",
                 table: "CommunicationInfos",
-                column: "LeadId");
+                column: "LeadID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_AccountID",

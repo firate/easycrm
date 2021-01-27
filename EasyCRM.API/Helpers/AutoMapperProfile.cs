@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using EasyCRM.API.DTOs;
+using EasyCRM.Business.DTOs;
 using EasyCRM.Entity.Models;
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,6 @@ namespace EasyCRM.API.Helpers
             CreateMap<Account, AccountToReturnDTO>()
                 .ForMember(d=>d.AccountType, opt=>opt.MapFrom(src=>src.AccountType.Name))
                 .ForMember(d=>d.Contacts, opt=>opt.MapFrom(src=>src.Contacts));
-            
-           
             CreateMap<AccountCreationDTO, Account>();
             CreateMap<Contact, ContactReturnDTO>();
             CreateMap<ContactCreationDTO, Contact>();

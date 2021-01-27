@@ -54,10 +54,10 @@ namespace EasyCRM.Data.Migrations
                         {
                             AccountId = 1,
                             AccountTypeId = 1,
-                            CreatedAt = new DateTime(2021, 1, 13, 23, 13, 22, 638, DateTimeKind.Local).AddTicks(8579),
+                            CreatedAt = new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(453),
                             Description = "uuu",
                             OrganizationName = "Microsoft",
-                            UpdatedAt = new DateTime(2021, 1, 13, 23, 13, 22, 639, DateTimeKind.Local).AddTicks(6882)
+                            UpdatedAt = new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(8719)
                         });
                 });
 
@@ -136,6 +136,15 @@ namespace EasyCRM.Data.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("Addresses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 1,
+                            CountryId = 1,
+                            IsMain = true
+                        });
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Brand", b =>
@@ -182,12 +191,14 @@ namespace EasyCRM.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("AccountId")
+                        .HasColumnName("AccountID")
                         .HasColumnType("int");
 
                     b.Property<int?>("CommunicationTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("ContactId")
+                        .HasColumnName("ContactID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -197,6 +208,7 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("LeadId")
+                        .HasColumnName("LeadID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -237,6 +249,32 @@ namespace EasyCRM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CommunicationTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "E-Mail",
+                            Name = "email"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Phone",
+                            Name = "phone"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Fax",
+                            Name = "fax"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "",
+                            Name = "www"
+                        });
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Contact", b =>
@@ -811,7 +849,7 @@ namespace EasyCRM.Data.Migrations
 
             modelBuilder.Entity("EasyCRM.Entity.Models.CommunicationInfo", b =>
                 {
-                    b.HasOne("EasyCRM.Entity.Models.Account", null)
+                    b.HasOne("EasyCRM.Entity.Models.Account", "Account")
                         .WithMany("CommunicationInfos")
                         .HasForeignKey("AccountId");
 
@@ -819,11 +857,11 @@ namespace EasyCRM.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CommunicationTypeId");
 
-                    b.HasOne("EasyCRM.Entity.Models.Contact", null)
+                    b.HasOne("EasyCRM.Entity.Models.Contact", "Contact")
                         .WithMany("CommunicationInfos")
                         .HasForeignKey("ContactId");
 
-                    b.HasOne("EasyCRM.Entity.Models.Lead", null)
+                    b.HasOne("EasyCRM.Entity.Models.Lead", "Lead")
                         .WithMany("CommunicationInfo")
                         .HasForeignKey("LeadId");
                 });

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\EasyCRM.Entity\EasyCRM.Entity.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

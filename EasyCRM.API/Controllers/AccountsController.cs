@@ -6,9 +6,10 @@ using AutoMapper;
 using System.Threading.Tasks;
 using System;
 using EasyCRM.Entity.Models;
-using EasyCRM.API.DTOs;
 using EasyCRM.Utility;
 using System.Collections.Generic;
+using EasyCRM.Business.DTOs;
+using EasyCRM.Business.ModelHelpers;
 
 namespace EasyCRM.Controllers
 {
@@ -24,8 +25,6 @@ namespace EasyCRM.Controllers
         {
             accountManager = _accountManager;
             mapper = _mapper;
-            
-
         }
 
         [HttpGet]
@@ -126,7 +125,7 @@ namespace EasyCRM.Controllers
 
                 if (result == true)
                 {
-                    var accountToReturn = mapper.Map<AccountToReturnDTO>(acc);
+                    var accountToReturn = mapper.Map<AccountToReturnDTO>(accountForCreation);
                     return CreatedAtRoute("GetAccount", new { Id = accountToReturn.AccountId }, accountToReturn);
                 }
 
@@ -138,34 +137,102 @@ namespace EasyCRM.Controllers
             }
         }
 
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> EditAccountInfo(int id, [FromBody] AccountEditDTO accountEditDTO)
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception)
-        //    {
+        [HttpPut("{id}")]
+        public async Task<IActionResult> EditAccountInfo(int id, [FromBody] AccountEditDTO accountEditDTO)
+        {
+            try
+            {
+                var acc = await accountManager.GetAccount(id);
+                if(acc != null)
+                {
+                    var isEdited = await accountManager.EditAccount(id, accountEditDTO);
+                    if(isEdited == true)
+                    {
+                        return NoContent();
+                    }
+                    return BadRequest();
+                }
+                return NotFound("No account found with given id");
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-        //        throw;
-        //    }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            try
+            {
+                var account = await accountManager.GetAccount(id);
 
-        //}
+                if(account != null)
+                {
+                    var isDeleted = await accountManager.DeleteAccount(id);
 
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteAccount(int id)
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception)
-        //    {
+                    if (isDeleted == true)
+                    {
+                        return NoContent();
+                    }
+                    return BadRequest("Account could not be deleted!");
+                    
+                }
+                else
+                {
+                    return NotFound("No account with given id!");
+                }
 
-        //        throw;
-        //    }
+                
+            }
+            catch (Exception)
+            {
 
-        //}
+                throw;
+            }
+
+        }
+
+        [HttpPost("addAddress")]
+        public async Task<IActionResult> CreateAccountAddress(AddressInfoParams addressInfoParams)
+        {
+            try
+            {
+                var result = await accountManager.AddAddressInfo(addressInfoParams);
+
+                if(result != false)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+    
+        [HttpPost("addCommInfo")]
+        public async Task<IActionResult> AddCommInfo(CommInfoParams commInfoParams)
+        {
+            try
+            {
+                var result = await accountManager.AddCommunicationInfo(commInfoParams);
+
+                if (result == true)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
+        }
     }
 }

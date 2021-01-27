@@ -36,7 +36,7 @@ namespace EasyCRM.Data.EF
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            Seed(modelBuilder);
+           
 
             modelBuilder.Entity<UserRole>(entity =>
             {
@@ -83,7 +83,8 @@ namespace EasyCRM.Data.EF
                 .WithMany(o => o.OpportunityContacts)
                 .HasForeignKey(oc=>oc.OpportunityId);
 
-            
+            Seed(modelBuilder);
+
         }
 
 
@@ -144,6 +145,38 @@ namespace EasyCRM.Data.EF
                     IsMain=true
                 }
                 );
+
+            modelBuilder.Entity<CommunicationType>().HasData( 
+                new CommunicationType 
+                { 
+                    Id=1,
+                    Name="email",
+                    Description="E-Mail"
+                },
+
+                new CommunicationType
+                {
+                    Id = 2,
+                    Name = "phone",
+                    Description = "Phone"
+                },
+
+                new CommunicationType
+                {
+                    Id = 3,
+                    Name = "fax",
+                    Description = "Fax"
+                },
+                new CommunicationType
+                {
+                    Id = 4,
+                    Name = "www",
+                    Description = ""
+                }
+
+                );
+
+            
         }
     }
 
