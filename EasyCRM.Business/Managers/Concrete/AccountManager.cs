@@ -1,4 +1,4 @@
-﻿using EasyCRM.Business.DTOs;
+﻿
 using EasyCRM.Business.Managers.Abstract;
 using EasyCRM.Business.ModelHelpers;
 using EasyCRM.Data.EF;
@@ -19,83 +19,6 @@ namespace EasyCRM.Business.Managers.Concrete
         public AccountManager(DataContext _dataContext)
         {
             dataContext = _dataContext;
-        }
-
-        public async Task<bool> AddAddressInfo(AddressInfoParams addressInfoParams)
-        {
-            try
-            {
-                var account = await dataContext.Accounts.Where(a => a.AccountId == addressInfoParams.AccountId).FirstOrDefaultAsync();
-                var country = await dataContext.Countries.Where(c => c.Id == addressInfoParams.CountryId).FirstOrDefaultAsync();
-
-                if (account != null)
-                {
-                    if (country!=null)
-                    {
-                        var address = new Address() 
-                        { 
-                            Account= account,
-                            AddressTitle = addressInfoParams.AddressTitle,
-                            AddressLine = addressInfoParams.AddressLine,
-                            Country = country,
-                            CountryId = addressInfoParams.CountryId,
-                            IsMain = addressInfoParams.IsMain
-                        };
-
-                        dataContext.Add(address);
-                        await dataContext.SaveChangesAsync();
-
-                        return true;
-                    }
-                    
-                    throw new Exception("Given CountryId is not valid");
-                    
-                }
-
-                throw new Exception("Given AccountId is not valid");
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-        }
-
-        public async Task<bool> AddCommunicationInfo(CommInfoParams commInfoParams)
-        {
-            try
-            {
-                var account = await dataContext.Accounts.Where(a => a.AccountId == commInfoParams.AccountId).FirstOrDefaultAsync();
-                var commType = await dataContext.CommunicationTypes.Where(c=>c.Id==commInfoParams.CommunicationTypeId).FirstOrDefaultAsync();
-
-                if(account != null)
-                {
-                    var commInfo = new CommunicationInfo 
-                    {
-                        
-                        Name=commInfoParams.Name,
-                        Value=commInfoParams.Value,
-                        Account=account,
-                        CommunicationType= commType,
-                        Description =commInfoParams.Description,
-                        CreatedAt =DateTime.Now,
-                        UpdatedAt =DateTime.Now
-                    };
-
-                    dataContext.CommunicationInfos.Add(commInfo);
-                    await dataContext.SaveChangesAsync();
-
-                    return true;
-                }
-
-                throw new Exception("AccountId not exists!");
-
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
         }
 
         public async Task<bool> CreateAccount(Account account)
@@ -158,34 +81,23 @@ namespace EasyCRM.Business.Managers.Concrete
             }
         }
 
-        public Task<bool> DeleteAddressInfo(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> EditAccount(int id, AccountEditDTO accountEditDTO)
+        public async Task<bool> EditAccount(int id, Account account)
         {
             try
             {
-                var account = await dataContext.Accounts.Where(a => a.AccountId == id).FirstOrDefaultAsync();
+                
+                var acc =await dataContext.Accounts.AsNoTracking().Where(a => a.AccountId == id).FirstOrDefaultAsync();
 
-                if (account != null)
+                if (acc != null)
                 {
-                    Account editedRecord = new Account
-                    {
-                        AccountId=id,
-                        OrganizationName=accountEditDTO.OrganizationName,
-                        AccountTypeId=accountEditDTO.AccountTypeId,
-                        Description=accountEditDTO.Description,
-                        UpdatedAt=DateTime.Now
-                    };
-
-                    account = editedRecord;
+                    account.AccountId = id;
                     dataContext.Accounts.Update(account);
                     await dataContext.SaveChangesAsync();
+                    return true;
                 }
-
                 return false;
+                
+               
             }
             catch (Exception)
             {

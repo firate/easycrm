@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasyCRM.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210127215217_Initial")]
-    partial class Initial
+    [Migration("20210202205620_Contact_Address_Fix")]
+    partial class Contact_Address_Fix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -56,10 +56,10 @@ namespace EasyCRM.Data.Migrations
                         {
                             AccountId = 1,
                             AccountTypeId = 1,
-                            CreatedAt = new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(453),
+                            CreatedAt = new DateTime(2021, 2, 2, 23, 56, 20, 417, DateTimeKind.Local).AddTicks(4070),
                             Description = "uuu",
                             OrganizationName = "Microsoft",
-                            UpdatedAt = new DateTime(2021, 1, 28, 0, 52, 17, 291, DateTimeKind.Local).AddTicks(8719)
+                            UpdatedAt = new DateTime(2021, 2, 2, 23, 56, 20, 418, DateTimeKind.Local).AddTicks(2579)
                         });
                 });
 
@@ -108,7 +108,7 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccountId")
+                    b.Property<int?>("AccountId")
                         .HasColumnName("AccountID")
                         .HasColumnType("int");
 
@@ -309,7 +309,7 @@ namespace EasyCRM.Data.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SelectedAddressId")
+                    b.Property<int?>("SelectedAddressId")
                         .HasColumnName("SelectedAddressID")
                         .HasColumnType("int");
 
@@ -323,6 +323,21 @@ namespace EasyCRM.Data.Migrations
                     b.HasIndex("SelectedAddressId");
 
                     b.ToTable("Contacts");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.ContactAddress", b =>
+                {
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ContactId", "AddressId");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("ContactAddress");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Country", b =>
@@ -838,9 +853,7 @@ namespace EasyCRM.Data.Migrations
                 {
                     b.HasOne("EasyCRM.Entity.Models.Account", "Account")
                         .WithMany("Addresses")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AccountId");
 
                     b.HasOne("EasyCRM.Entity.Models.Country", "Country")
                         .WithMany()
@@ -875,8 +888,21 @@ namespace EasyCRM.Data.Migrations
                         .HasForeignKey("AccountId");
 
                     b.HasOne("EasyCRM.Entity.Models.Address", "SelectedAddress")
-                        .WithMany("Contacts")
-                        .HasForeignKey("SelectedAddressId")
+                        .WithMany()
+                        .HasForeignKey("SelectedAddressId");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.ContactAddress", b =>
+                {
+                    b.HasOne("EasyCRM.Entity.Models.Address", "Address")
+                        .WithMany("ContactAddresses")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyCRM.Entity.Models.Contact", "Contact")
+                        .WithMany("ContactAddresses")
+                        .HasForeignKey("ContactId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

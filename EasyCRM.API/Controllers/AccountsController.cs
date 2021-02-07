@@ -8,8 +8,8 @@ using System;
 using EasyCRM.Entity.Models;
 using EasyCRM.Utility;
 using System.Collections.Generic;
-using EasyCRM.Business.DTOs;
 using EasyCRM.Business.ModelHelpers;
+using EasyCRM.API.DTOs;
 
 namespace EasyCRM.Controllers
 {
@@ -41,25 +41,21 @@ namespace EasyCRM.Controllers
                     foreach(var acc in accounts)
                     {
                         var contacts = acc.Contacts;
-
                         List<ContactReturnDTO> contactsToReturn = new List<ContactReturnDTO>();
                         
                         foreach(var c in contacts)
                         {
                             ContactReturnDTO contact = new ContactReturnDTO()
                             {
-
                                 ContactId=c.ContactId,
                                 FirstName = c.FirstName,
                                 MiddleName = c.MiddleName,
                                 LastName= c.LastName,
                                 NameTitle= c.NameTitle,
-                                SelectedAddressId=c.SelectedAddressId,
+                                SelectedAddressId=(int)c.SelectedAddressId,
                                 AccountId=c.AccountId.Value,
                                 Notes = c.Notes
-                                
                             };
-
                             contactsToReturn.Add(contact);
                         }
 
@@ -73,16 +69,12 @@ namespace EasyCRM.Controllers
                             UpdatedAt =acc.UpdatedAt,
                             Contacts = contactsToReturn
                         };
-
                         accountToReturns.Add(accountsToReturn);
                     }
 
-
                     Response.AddPagination(accountToReturns.CurrentPage, accountToReturns.PageSize, accountToReturns.TotalCount, accountToReturns.TotalPages);
-                    
                     return Ok(accountToReturns);
                 }
-
                 return NotFound("Not Found!");
             }
             catch (Exception)
@@ -138,21 +130,18 @@ namespace EasyCRM.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> EditAccountInfo(int id, [FromBody] AccountEditDTO accountEditDTO)
+        public async Task<IActionResult> EditAccountInfo(int id, [FromBody]AccountEditDTO accountEditDTO)
         {
             try
             {
-                var acc = await accountManager.GetAccount(id);
-                if(acc != null)
+                var account = mapper.Map<Account>(accountEditDTO);
+                var isEdited = await accountManager.EditAccount(id, account);
+                if(isEdited == true)
                 {
-                    var isEdited = await accountManager.EditAccount(id, accountEditDTO);
-                    if(isEdited == true)
-                    {
-                        return NoContent();
-                    }
-                    return BadRequest();
+                    return NoContent();
                 }
-                return NotFound("No account found with given id");
+                return BadRequest();
+                
             }
             catch (Exception)
             {
@@ -193,46 +182,23 @@ namespace EasyCRM.Controllers
 
         }
 
-        [HttpPost("addAddress")]
-        public async Task<IActionResult> CreateAccountAddress(AddressInfoParams addressInfoParams)
+        [HttpPost("{accountId}/addAddress")]
+        public async Task<IActionResult> CreateAccountAddress([FromBody] AddressInfoParams addressInfoParams)
         {
-            try
-            {
-                var result = await accountManager.AddAddressInfo(addressInfoParams);
-
-                if(result != false)
-                {
-                    return Ok();
-                }
-
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            throw new NotImplementedException();
         }
     
-        [HttpPost("addCommInfo")]
-        public async Task<IActionResult> AddCommInfo(CommInfoParams commInfoParams)
+        [HttpPost("{accountId}/addCommInfo")]
+        public async Task<IActionResult> AddCommInfo([FromBody] CommInfoParams commInfoParams)
         {
-            try
-            {
-                var result = await accountManager.AddCommunicationInfo(commInfoParams);
+            throw new NotImplementedException();
+           
+        }
 
-                if (result == true)
-                {
-                    return NoContent();
-                }
-
-                return BadRequest();
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            
+        [HttpDelete("{accountId}/deleteAddressInfo/{addressId}")]
+        public async Task<IActionResult> DeleteAddressInfo(int accountId, int addressId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

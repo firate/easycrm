@@ -12,6 +12,7 @@ namespace EasyCRM.Entity.Models
         {
             SalesOrderBillToAddress = new List<SalesOrder>();
             SalesOrderShipToAddress = new List<SalesOrder>();
+            ContactAddresses = new List<ContactAddress>();
         }
         public int Id { get; set; }
         public string AddressTitle { get; set; }
@@ -20,26 +21,26 @@ namespace EasyCRM.Entity.Models
         public string PostalCode { get; set; }
 
         [Column("AccountID")]
-        public int AccountId { get; set; }
-
+        public int? AccountId { get; set; }
         [ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
 
         [Column("CountryID")]
         public int CountryId { get; set; }
-
         [ForeignKey(nameof(CountryId))]
         public Country Country { get; set; }
 
-        public bool IsMain { get; set; }
+        public bool IsMain { get; set; } = false;
 
-        [InverseProperty(nameof(Contact.SelectedAddress))]
-        public List<Contact> Contacts { get; set; }
+        public List<ContactAddress> ContactAddresses { get; set; }
 
         [InverseProperty(nameof(SalesOrder.BillToAddress))]
         public List<SalesOrder> SalesOrderBillToAddress { get; set; }
 
         [InverseProperty(nameof(SalesOrder.ShipToAddress))]
         public List<SalesOrder> SalesOrderShipToAddress { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using EasyCRM.Entity.Models;
 
-namespace EasyCRM.Business.DTOs
+namespace EasyCRM.API.DTOs
 {
     public class AccountToReturnDTO
     {

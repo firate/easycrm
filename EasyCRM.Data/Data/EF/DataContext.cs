@@ -83,6 +83,20 @@ namespace EasyCRM.Data.EF
                 .WithMany(o => o.OpportunityContacts)
                 .HasForeignKey(oc=>oc.OpportunityId);
 
+            modelBuilder.Entity<ContactAddress>()
+                .HasKey(ca=>new {ca.ContactId, ca.AddressId });
+
+            modelBuilder.Entity<ContactAddress>()
+                .HasOne(ca => ca.Contact)
+                .WithMany(c => c.ContactAddresses)
+                .HasForeignKey(ca=>ca.ContactId);
+
+            modelBuilder.Entity<ContactAddress>()
+                .HasOne(ca => ca.Address)
+                .WithMany(a => a.ContactAddresses)
+                .HasForeignKey(ca => ca.AddressId);
+
+
             Seed(modelBuilder);
 
         }

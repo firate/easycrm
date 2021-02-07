@@ -12,6 +12,7 @@ namespace EasyCRM.Entity.Models
         {
             CommunicationInfos = new List<CommunicationInfo>();
             OpportunityContacts = new List<OpportunityContact>();
+            ContactAddresses = new List<ContactAddress>();
         }
         
         [Key]
@@ -26,10 +27,12 @@ namespace EasyCRM.Entity.Models
         public List<CommunicationInfo> CommunicationInfos { get; set; }
         
         [Column("SelectedAddressID")]
-        public int SelectedAddressId { get; set; }
+        public int? SelectedAddressId { get; set; }
         
         [ForeignKey(nameof(SelectedAddressId))]
         public Address SelectedAddress { get; set; }
+
+        public List<ContactAddress> ContactAddresses { get; set; }
 
         [Column("AccountID")]
         public int? AccountId { get; set; }
