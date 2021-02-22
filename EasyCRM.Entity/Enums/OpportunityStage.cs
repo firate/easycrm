@@ -6,6 +6,7 @@ namespace EasyCRM.Entity.Enums
 {
     public enum OpportunityStage
     {
+        Unassigned=0,
         Prospecting = 1,
         Qualification = 2,
         Proposal = 3,

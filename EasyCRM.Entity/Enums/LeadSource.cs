@@ -7,6 +7,7 @@ namespace EasyCRM.Entity.Enums
 {
     public enum LeadSource
     {
+        Unassigned = 0,
         Call = 1,
         Email = 2,
         WebSite = 3,
