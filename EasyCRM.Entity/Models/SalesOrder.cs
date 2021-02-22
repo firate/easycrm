@@ -48,6 +48,9 @@ namespace EasyCRM.Entity.Models
         [InverseProperty(nameof(Address.SalesOrderShipToAddress))]
         public Address ShipToAddress { get; set; }
 
+        public DateTime OrderDate { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
     }
 
     
