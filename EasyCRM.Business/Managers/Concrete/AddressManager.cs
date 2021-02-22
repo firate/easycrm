@@ -11,7 +11,7 @@ namespace EasyCRM.Business.Managers.Concrete
 {
     public class AddressManager : IAddressManager
     {
-        
+
         private readonly DataContext dataContext;
 
         public AddressManager(DataContext _dataContext)
@@ -19,32 +19,33 @@ namespace EasyCRM.Business.Managers.Concrete
             dataContext = _dataContext;
         }
 
-        public async Task<bool> CreateAddress(Address address, int? accountId, int? contactId)
+        public async Task<bool> CreateAddress(Address address)
         {
             try
             {
-                var account = await dataContext.Accounts.AsNoTracking().Where(a => a.AccountId == accountId).FirstOrDefaultAsync();
-
-                if(address != null)
+                if (address.AccountId > 0)
                 {
-                    if(account != null)
+                    var account = await dataContext.Accounts.AsNoTracking().Where(a => a.AccountId == address.AccountId).FirstOrDefaultAsync();
+                    if (account != null)
                     {
-                        address.AccountId = account.AccountId;
+                        dataContext.Addresses.Add(address);
+                        await dataContext.SaveChangesAsync();
+                        return true;
                     }
-
+                    else
+                    {
+                        throw new Exception("Invalid account id");
+                    }
+                }
+                else
+                {
                     dataContext.Addresses.Add(address);
                     await dataContext.SaveChangesAsync();
-
                     return true;
                 }
-
-                return false;
-
-                
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -72,14 +73,52 @@ namespace EasyCRM.Business.Managers.Concrete
             }
         }
 
-        public Task<bool> EditAddress(int id, Address address)
+        public async Task<bool> EditAddress(int id, Address address)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var adr = await dataContext.Addresses.AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
+                if (adr != null)
+                {
+                    adr = address;
+                    dataContext.Addresses.Update(adr);
+                    await dataContext.SaveChangesAsync();
+
+                    return true;
+                }
+                else
+                {
+                    throw new Exception("Address not found!");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
-        public Task<Address> GetAddress(int id)
+        public async Task<Address> GetAddress(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var address = await dataContext.Addresses.AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
+                if (address != null)
+                {
+                    return address;
+                }
+                else
+                {
+                    throw new Exception("Address not found!");
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
+
+        
     }
 }

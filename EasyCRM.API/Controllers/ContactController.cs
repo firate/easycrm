@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using EasyCRM.API.DTOs;
+using EasyCRM.Business.Managers.Abstract;
+using EasyCRM.Entity.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using System;
+using System.Threading.Tasks;
 
 namespace EasyCRM.Controllers
 {
@@ -9,12 +13,16 @@ namespace EasyCRM.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
+        private readonly IContactManager contactManager;
+        private readonly IMapper mapper;
 
 
 
-        public ContactController()
+        public ContactController(IContactManager _contactManager, IMapper _mapper)
         {
-           
+            contactManager = _contactManager;
+            mapper = _mapper;
+
         }
 
         //[HttpGet]
@@ -31,42 +39,54 @@ namespace EasyCRM.Controllers
         //    }
         //}
 
-        //[HttpGet("{id}", Name = "GetContact")]
-        //public async Task<IActionResult> GetContactById(int contactId)
-        //{
+        [HttpGet("{id}", Name = "GetContact")]
+        public async Task<IActionResult> GetContactById(int contactId)
+        {
 
-        //    try
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
+            try
+            {
+                var c = await contactManager.GetContact(contactId);
 
-        //}
+                if (c != null)
+                {
+                    var contactToReturn = mapper.Map<ContactReturnDTO>(c);
+                    return Ok(contactToReturn);
+                }
 
-        //[HttpPost]
-        //public async Task<IActionResult> CreateNewContact([FromBody] ContactCreationDTO contactCreationDTO)
-        //{
-        //    try
-        //    {
-        //        throw new NotImplementedException();
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
 
-        //    }
-        //    catch (SqlException e)
-        //    {
-        //        logger.LogError(e.InnerException.InnerException.Message);
-        //        throw e;
-        //    }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateNewContact([FromBody] ContactCreationDTO contactCreationDTO)
+        {
+            try
+            {
+                var contact = mapper.Map<Contact>(contactCreationDTO);
+
+                var result = await contactManager.CreateContact(contact);
+
+                if (result == true)
+                {
+                    var contactToReturn = mapper.Map<ContactReturnDTO>(contact);
+                    return CreatedAtRoute("GetContact", new { ContactId = contactToReturn.ContactId }, contactToReturn);
+                }
+
+                return BadRequest();
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
 
-        //    catch (Exception e)
-        //    {
-        //        logger.LogError($"hata mesajım: { e.InnerException.Message}");
-        //        throw e.InnerException;
-        //    }
-        //}
 
         //[HttpPut("{id}")]
         //public async Task<IActionResult> EditContact([FromBody]ContactEditDTO contactEditDTO, int id) 
@@ -97,5 +117,51 @@ namespace EasyCRM.Controllers
         //    }
         //}
 
+        [HttpPost("/connectAddress")]
+        public async Task<IActionResult> ConnectAddressToContact(int contactId, int addressId)
+        {
+            try
+            {
+                var result = await contactManager.ConnectAddressToContact(contactId, addressId);
+
+                if (result == true)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
+
+
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+        }
+
+        [HttpGet("{id}/addresses")]
+        public async Task<IActionResult> GetContactAddresses(int id)
+        {
+
+            try
+            {
+                var c = await contactManager.GetContactAddresses(id);
+
+                if (c != null)
+                {
+                    return Ok(c);
+                }
+
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
     }
 }
+

@@ -28,8 +28,6 @@ namespace EasyCRM.API
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			
-
 			services.AddDbContext<DataContext>(options=>
 				options.UseSqlServer(Configuration.GetConnectionString("LocalDBConnection"))
 			);
@@ -52,6 +50,9 @@ namespace EasyCRM.API
 				.AddEntityFrameworkStores<DataContext>();
 
 			services.AddTransient<IAccountManager, AccountManager>();
+			services.AddTransient<IContactManager, ContactManager>();
+			services.AddTransient<IAddressManager, AddressManager>();
+			services.AddTransient<ISalesOrderManager, SalesOrderManager>();
 
 			services.AddControllers().AddNewtonsoftJson(options =>
 						options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
@@ -61,8 +62,6 @@ namespace EasyCRM.API
 			//{
 			//    fv.RegisterValidatorsFromAssemblyContaining<Startup>();
 			//});
-
-
 
 			// In production, the React files will be served from this directory
 			services.AddSpaStaticFiles(configuration =>
@@ -84,13 +83,8 @@ namespace EasyCRM.API
 						Email = "",
 						Url = "https://twitter.com/firatergul0"
 					};
-
-					
-
 				};
-
 			});
-
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -114,7 +108,6 @@ namespace EasyCRM.API
 			app.UseOpenApi();
 			app.UseSwaggerUi3();
 
-
 			app.UseRouting();
 
 			app.UseAuthentication();
@@ -134,7 +127,7 @@ namespace EasyCRM.API
             });
 
 
-   //         app.UseSpa(spa =>
+			//app.UseSpa(spa =>
 			//{
 			//	spa.Options.SourcePath = "ClientApp";
 

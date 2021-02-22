@@ -18,12 +18,14 @@ namespace EasyCRM.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountManager accountManager;
+        private readonly IAddressManager addressManager;
         private readonly IMapper mapper;
 
 
-        public AccountsController(IAccountManager _accountManager,IMapper _mapper)
+        public AccountsController(IAccountManager _accountManager,IAddressManager _addressManager, IMapper _mapper)
         {
             accountManager = _accountManager;
+            addressManager = _addressManager;
             mapper = _mapper;
         }
 
@@ -107,7 +109,7 @@ namespace EasyCRM.Controllers
 
         }
 
-        [HttpPost]
+        [HttpPost("/new")]
         public async Task<IActionResult> CreateNewAccount([FromBody] AccountCreationDTO accountForCreation)
         {
             try
@@ -117,7 +119,7 @@ namespace EasyCRM.Controllers
 
                 if (result == true)
                 {
-                    var accountToReturn = mapper.Map<AccountToReturnDTO>(accountForCreation);
+                    var accountToReturn = mapper.Map<AccountToReturnDTO>(acc);
                     return CreatedAtRoute("GetAccount", new { Id = accountToReturn.AccountId }, accountToReturn);
                 }
 
@@ -155,50 +157,71 @@ namespace EasyCRM.Controllers
             try
             {
                 var account = await accountManager.GetAccount(id);
-
                 if(account != null)
                 {
                     var isDeleted = await accountManager.DeleteAccount(id);
-
                     if (isDeleted == true)
                     {
                         return NoContent();
                     }
                     return BadRequest("Account could not be deleted!");
-                    
                 }
                 else
                 {
-                    return NotFound("No account with given id!");
-                }
+                    return NotFound("No account found with given id!");
+                }               
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
-                
+        [HttpPost("{accountId}/addAddress")]
+        public async Task<IActionResult> CreateAccountAddress([FromBody] AddressCreationDTO addressCreationDTO)
+        {
+            try
+            {
+                var acc = await accountManager.GetAccount(addressCreationDTO.AccountId);
+
+                if (acc != null)
+                {
+                    var address = mapper.Map<Address>(addressCreationDTO);
+                    var result = await addressManager.CreateAddress(address);
+
+                    if (result == true)
+                    {
+                        return NoContent();
+                    }
+                    else
+                    {
+                        throw new Exception("Address could not added!");
+                    }
+
+                }
+                else
+                {
+                    throw new Exception("Invalid Account Id!");
+                }
             }
             catch (Exception)
             {
 
                 throw;
             }
-
         }
 
-        [HttpPost("{accountId}/addAddress")]
-        public async Task<IActionResult> CreateAccountAddress([FromBody] AddressInfoParams addressInfoParams)
-        {
-            throw new NotImplementedException();
-        }
-    
-        [HttpPost("{accountId}/addCommInfo")]
-        public async Task<IActionResult> AddCommInfo([FromBody] CommInfoParams commInfoParams)
-        {
-            throw new NotImplementedException();
-           
-        }
+        //[HttpPost("{accountId}/addCommInfo")]
+        //public async Task<IActionResult> AddCommInfo([FromBody] CommInfoParams commInfoParams)
+        //{
+        //    throw new NotImplementedException();
 
-        [HttpDelete("{accountId}/deleteAddressInfo/{addressId}")]
-        public async Task<IActionResult> DeleteAddressInfo(int accountId, int addressId)
-        {
-            throw new NotImplementedException();
-        }
+        //}
+
+        //[HttpDelete("{accountId}/deleteAddressInfo/{addressId}")]
+        //public async Task<IActionResult> DeleteAddressInfo(int accountId, int addressId)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

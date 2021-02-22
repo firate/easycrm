@@ -21,6 +21,9 @@ namespace EasyCRM.API.Helpers
                 .ForMember(a=>a.CreatedAt,opt=>opt.Ignore());
             CreateMap<Contact, ContactReturnDTO>();
             CreateMap<ContactCreationDTO, Contact>();
+
+            // Address
+            CreateMap<AddressCreationDTO, Address>();
         }
     }
 }

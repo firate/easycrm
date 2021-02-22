@@ -68,9 +68,14 @@ namespace EasyCRM.Business.Managers.Concrete
                 else
                 {
                     dataContext.Accounts.Remove(acc);
-                    await dataContext.SaveChangesAsync();
+                    var result = await dataContext.SaveChangesAsync();
 
-                    return true;
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+
+                    return false;
                 }
                 
             }
@@ -112,8 +117,15 @@ namespace EasyCRM.Business.Managers.Concrete
             try
             {
                 var account = await dataContext.Accounts.Include(a => a.AccountType).Include(a=>a.Contacts).FirstAsync(a => a.AccountId == id);
-
-                return account;
+                if (account != null)
+                {
+                    return account;
+                }
+                else
+                {
+                    throw new Exception("Account not found!");
+                }
+                
 
             }
             catch (Exception)

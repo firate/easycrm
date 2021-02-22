@@ -13,7 +13,7 @@ namespace EasyCRM.API.DTOs
         public string PostalCode { get; set; }
         public int AccountId { get; set; }
         public int CountryId { get; set; }
-        public int ContactId { get; set; }
+        //public int ContactId { get; set; }
         public bool IsMain { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
