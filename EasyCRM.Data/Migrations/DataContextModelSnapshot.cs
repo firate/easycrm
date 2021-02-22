@@ -54,10 +54,10 @@ namespace EasyCRM.Data.Migrations
                         {
                             AccountId = 1,
                             AccountTypeId = 1,
-                            CreatedAt = new DateTime(2021, 2, 3, 23, 5, 28, 989, DateTimeKind.Local).AddTicks(8118),
+                            CreatedAt = new DateTime(2021, 2, 22, 22, 47, 56, 532, DateTimeKind.Local).AddTicks(3360),
                             Description = "uuu",
                             OrganizationName = "Microsoft",
-                            UpdatedAt = new DateTime(2021, 2, 3, 23, 5, 28, 990, DateTimeKind.Local).AddTicks(6939)
+                            UpdatedAt = new DateTime(2021, 2, 22, 22, 47, 56, 533, DateTimeKind.Local).AddTicks(1539)
                         });
                 });
 
@@ -586,6 +586,9 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnName("BillToAddressID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("RevisionNumber")
                         .HasColumnType("int");
 
@@ -598,6 +601,9 @@ namespace EasyCRM.Data.Migrations
 
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("SalesOrderId");
 

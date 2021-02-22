@@ -108,7 +108,34 @@ namespace EasyCRM.Business.Managers.Concrete
 
         public async Task<PagedList<SalesOrder>> SearchSalesOrder(SalesOrderParams salesOrderParams)
         {
-            throw new NotImplementedException();
+            var salesOrders = dataContext.SalesOrders.AsQueryable();
+
+            if(salesOrderParams.SalesOrderId > 0)
+            {
+                salesOrders = salesOrders.Where(so => so.SalesOrderId == salesOrderParams.SalesOrderId);
+                return await PagedList<SalesOrder>.CreateAsync(salesOrders,salesOrderParams.PageNumber,salesOrderParams.PageSize);
+            }
+
+            if(salesOrderParams.AccountId > 0)
+            {
+                salesOrders = salesOrders.Where(so=>so.AccountId ==salesOrderParams.AccountId);
+            }
+
+            if(!String.IsNullOrEmpty(salesOrderParams.Status))
+            {
+                salesOrders = salesOrders.Where(so=>so.Status.ToString() ==salesOrderParams.Status);
+            }
+
+            if (salesOrderParams.BeginDate != null)
+            {
+                salesOrders = salesOrders.Where(so=>so.OrderDate >= salesOrderParams.BeginDate);
+                if(salesOrderParams.EndDate != null)
+                {
+                    salesOrders = salesOrders.Where(so=>so.OrderDate <= salesOrderParams.EndDate);
+                }
+            }
+
+            return await PagedList<SalesOrder>.CreateAsync(salesOrders, salesOrderParams.PageNumber, salesOrderParams.PageSize);
         }
     }
 }
