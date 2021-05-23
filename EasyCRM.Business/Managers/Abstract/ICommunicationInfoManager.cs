@@ -14,7 +14,6 @@ namespace EasyCRM.Business.Managers.Abstract
         Task<CommunicationInfo> GetCommunicationInfo(int id);
         Task<bool> EditCommunicationInfo(int id, CommunicationInfo communicationInfo);
         Task<bool> DeleteCommunicationInfo(int id);
-
         Task<PagedList<CommunicationInfo>> SearchCommunicationInfos(CommInfoParams commInfoParams);
 
     }

@@ -10,7 +10,7 @@ namespace EasyCRM.Business.Managers.Abstract
 {
     public interface IContactManager
     {
-        Task<PagedList<Contact>> SearchAccounts(ContactParams contactParams);
+        Task<PagedList<Contact>> SearchContacts(ContactParams contactParams);
 
         Task<bool> CreateContact(Contact contact);
         Task<Contact> GetContact(int id);

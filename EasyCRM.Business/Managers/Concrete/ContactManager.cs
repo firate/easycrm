@@ -24,7 +24,7 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                await dataContext.Contacts.AddAsync(contact);
+                await dataContext.Contact.AddAsync(contact);
                 var result = await dataContext.SaveChangesAsync();
 
                 if (result > 0)
@@ -46,7 +46,7 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var contact = await dataContext.Contacts.FirstOrDefaultAsync(c => c.ContactId == id);
+                var contact = await dataContext.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
 
                 if (contact != null)
                 {
@@ -74,12 +74,12 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var c = await dataContext.Contacts.AsNoTracking().FirstOrDefaultAsync(c => c.ContactId == id);
+                var c = await dataContext.Contact.AsNoTracking().FirstOrDefaultAsync(c => c.ContactId == id);
 
                 if (c != null)
                 {
                     contact.ContactId = id;
-                    dataContext.Contacts.Update(contact);
+                    dataContext.Contact.Update(contact);
                     var result = await dataContext.SaveChangesAsync();
 
                     if (result > 0)
@@ -103,7 +103,7 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var contact = await dataContext.Contacts.FirstOrDefaultAsync(c => c.ContactId == id);
+                var contact = await dataContext.Contact.FirstOrDefaultAsync(c => c.ContactId == id);
 
                 if (contact != null)
                 {
@@ -123,8 +123,8 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var contact = await dataContext.Contacts.FirstOrDefaultAsync(c => c.ContactId == contactId);
-                var address = await dataContext.Addresses.FirstOrDefaultAsync(a => a.Id == addressId);
+                var contact = await dataContext.Contact.FirstOrDefaultAsync(c => c.ContactId == contactId);
+                var address = await dataContext.Address.FirstOrDefaultAsync(a => a.Id == addressId);
 
                 if (contact != null && address != null)
                 {
@@ -152,7 +152,7 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var addresses = await dataContext.Addresses
+                var addresses = await dataContext.Address
                     .Include(a => a.ContactAddresses)
                     .Where(a=>a.ContactAddresses.Any(x=>x.ContactId==contactId))
                     .ToListAsync();
@@ -171,9 +171,9 @@ namespace EasyCRM.Business.Managers.Concrete
             }
         }
 
-        public async Task<PagedList<Contact>> SearchAccounts(ContactParams contactParams)
+        public async Task<PagedList<Contact>> SearchContacts(ContactParams contactParams)
         {
-            var contacts = dataContext.Contacts.AsQueryable();
+            var contacts = dataContext.Contact.AsQueryable();
 
             if(contactParams.ContactId > 0)
             {

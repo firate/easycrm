@@ -26,7 +26,7 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                await dataContext.SalesOrders.AddAsync(salesOrder);
+                await dataContext.SalesOrder.AddAsync(salesOrder);
                 var result = await dataContext.SaveChangesAsync();
 
                 if (result > 0)
@@ -48,10 +48,10 @@ namespace EasyCRM.Business.Managers.Concrete
         {
             try
             {
-                var salesOrder = await dataContext.SalesOrders.Where(so => so.SalesOrderId == id).FirstOrDefaultAsync();
+                var salesOrder = await dataContext.SalesOrder.Where(so => so.SalesOrderId == id).FirstOrDefaultAsync();
                 if (salesOrder != null)
                 {
-                    var solCount = await dataContext.SalesOrderLines.Where(sol => sol.SalesOrderId == id).CountAsync();
+                    var solCount = await dataContext.SalesOrderLine.Where(sol => sol.SalesOrderId == id).CountAsync();
                     if(solCount <= 0)
                     {
                         dataContext.Remove(salesOrder);
@@ -76,12 +76,12 @@ namespace EasyCRM.Business.Managers.Concrete
 
         public async Task<bool> EditSalesOrder(int id, SalesOrder salesOrder)
         {
-            var so = await dataContext.SalesOrders.Where(so=>so.SalesOrderId==id).FirstOrDefaultAsync();
+            var so = await dataContext.SalesOrder.Where(so=>so.SalesOrderId==id).FirstOrDefaultAsync();
 
             if (so != null)
             {
                 salesOrder.SalesOrderId = id;
-                dataContext.SalesOrders.Update(salesOrder);
+                dataContext.SalesOrder.Update(salesOrder);
 
                 var result = await dataContext.SaveChangesAsync();
 
@@ -97,7 +97,7 @@ namespace EasyCRM.Business.Managers.Concrete
 
         public async Task<SalesOrder> GetSalesOrder(int id)
         {
-            var so = await dataContext.SalesOrders.Where(so => so.SalesOrderId == id).FirstOrDefaultAsync();
+            var so = await dataContext.SalesOrder.Where(so => so.SalesOrderId == id).FirstOrDefaultAsync();
             if (so != null)
             {
                 return so;
@@ -108,7 +108,7 @@ namespace EasyCRM.Business.Managers.Concrete
 
         public async Task<PagedList<SalesOrder>> SearchSalesOrder(SalesOrderParams salesOrderParams)
         {
-            var salesOrders = dataContext.SalesOrders.AsQueryable();
+            var salesOrders = dataContext.SalesOrder.AsQueryable();
 
             if(salesOrderParams.SalesOrderId > 0)
             {
