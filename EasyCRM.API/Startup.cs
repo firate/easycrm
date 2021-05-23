@@ -52,6 +52,8 @@ namespace EasyCRM.API
 			services.AddTransient<IAccountManager, AccountManager>();
 			services.AddTransient<IContactManager, ContactManager>();
 			services.AddTransient<IAddressManager, AddressManager>();
+			services.AddTransient<ICommunicationInfoManager,CommunicationInfoManager>();
+			services.AddTransient<IProductManager, ProductManager>();
 			services.AddTransient<ISalesOrderManager, SalesOrderManager>();
 
 			services.AddControllers().AddNewtonsoftJson(options =>
