@@ -1,20 +1,20 @@
-﻿using System;
+﻿using EasyCRM.Utility;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace EasyCRM.API.DTOs
+namespace EasyCRM.Business.ModelHelpers
 {
-    public class AddressCreationDTO
+    public class AddressParams:BaseSearchParams
     {
+        public int Id { get; set; }
         public string AddressTitle { get; set; }
         public string AddressLine { get; set; }
         public string State { get; set; }
-        public string PostalCode { get; set; }
+        public string PostalCode { get; set; }       
         public int? AccountId { get; set; }
         public int CountryId { get; set; }
         public int? ContactId { get; set; }
-        public bool IsMain { get; set; }
-        
+        public bool? IsMain { get; set; }
     }
 }

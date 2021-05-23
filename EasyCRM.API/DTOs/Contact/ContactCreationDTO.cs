@@ -11,8 +11,8 @@ namespace EasyCRM.API.DTOs
         public string MiddleName { get; set; }
         public string LastName { get; set; }
         public string NameTitle { get; set; }
-        public int SelectedAddressId { get; set; }
-        public int AccountId { get; set; }
+        public int? SelectedAddressId { get; set; }
+        public int? AccountId { get; set; }
         public string Notes { get; set; }
 
     }

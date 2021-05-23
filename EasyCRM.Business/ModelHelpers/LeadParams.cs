@@ -1,11 +1,12 @@
-﻿using System;
+﻿using EasyCRM.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace EasyCRM.Business.ModelHelpers
 {
-    public class LeadParams
+    public class LeadParams: BaseSearchParams
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,7 +15,9 @@ namespace EasyCRM.Business.ModelHelpers
         public string LastName { get; set; }
         public string Title { get; set; }
 
-        public string AccountName { get; set; }
+        public int IndustryId { get; set; }
+        public int AccountId { get; set; }
+        
 
     }
 }
