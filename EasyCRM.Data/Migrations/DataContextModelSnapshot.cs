@@ -37,28 +37,42 @@ namespace EasyCRM.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdentificationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<string>("OrganizationName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("VatNumber")
+                        .HasColumnType("int");
+
                     b.HasKey("AccountId");
 
                     b.HasIndex("AccountTypeId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Account");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            AccountId = 1,
-                            AccountTypeId = 1,
-                            CreatedAt = new DateTime(2021, 2, 22, 22, 47, 56, 532, DateTimeKind.Local).AddTicks(3360),
-                            Description = "uuu",
-                            OrganizationName = "Microsoft",
-                            UpdatedAt = new DateTime(2021, 2, 22, 22, 47, 56, 533, DateTimeKind.Local).AddTicks(1539)
-                        });
+            modelBuilder.Entity("EasyCRM.Entity.Models.AccountGroup", b =>
+                {
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AccountId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("AccountGroup");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.AccountType", b =>
@@ -76,7 +90,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AccountTypes");
+                    b.ToTable("AccountType");
 
                     b.HasData(
                         new
@@ -141,18 +155,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Addresses");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 1,
-                            CountryId = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsMain = true,
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Brand", b =>
@@ -168,9 +171,12 @@ namespace EasyCRM.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("WebSite")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("Brand");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Category", b =>
@@ -180,6 +186,9 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("BaseCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -188,7 +197,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.CommunicationInfo", b =>
@@ -202,7 +211,8 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnName("AccountID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CommunicationTypeId")
+                    b.Property<int>("CommunicationTypeId")
+                        .HasColumnName("CommunicationTypeID")
                         .HasColumnType("int");
 
                     b.Property<int?>("ContactId")
@@ -238,7 +248,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("LeadId");
 
-                    b.ToTable("CommunicationInfos");
+                    b.ToTable("CommunicationInfo");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.CommunicationType", b =>
@@ -252,37 +262,12 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("CommunicationTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "E-Mail",
-                            Name = "email"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Phone",
-                            Name = "phone"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Fax",
-                            Name = "fax"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "",
-                            Name = "www"
-                        });
+                    b.ToTable("CommunicationType");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Contact", b =>
@@ -302,6 +287,9 @@ namespace EasyCRM.Data.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsPrincipalContact")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -328,7 +316,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("SelectedAddressId");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contact");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.ContactAddress", b =>
@@ -364,7 +352,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Country");
 
                     b.HasData(
                         new
@@ -374,6 +362,54 @@ namespace EasyCRM.Data.Migrations
                             Name = "Turkey",
                             Note = ""
                         });
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.Currency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AmountDecimals")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ConversionFactor")
+                        .HasColumnType("decimal(10,4)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ValidFromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ValidUntilDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Currency");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Group");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Industry", b =>
@@ -396,7 +432,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Industries");
+                    b.ToTable("Industry");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Lead", b =>
@@ -449,7 +485,55 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("IndustryId");
 
-                    b.ToTable("Leads");
+                    b.ToTable("Lead");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.Media", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AccountId")
+                        .HasColumnName("AccountID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BrandId")
+                        .HasColumnName("BrandID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ContactId")
+                        .HasColumnName("ContactID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MediaURL")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnName("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("BrandId");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Media");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Opportunity", b =>
@@ -487,7 +571,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Opportunities");
+                    b.ToTable("Opportunity");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.OpportunityContact", b =>
@@ -512,6 +596,10 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BrandId")
+                        .HasColumnName("BrandID")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnName("CategoryID")
                         .HasColumnType("int");
@@ -519,7 +607,21 @@ namespace EasyCRM.Data.Migrations
                     b.Property<string>("CleanURL")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal?>("CostPrice")
+                        .HasColumnType("decimal(10,4)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("CurrencyId")
+                        .HasColumnName("CurrencyID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EAN")
+                        .HasColumnName("Ean")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -528,17 +630,50 @@ namespace EasyCRM.Data.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SKU")
+                        .HasColumnName("Sku")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Size")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UPC")
+                        .HasColumnName("Upc")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UnitCodeId")
+                        .HasColumnName("UnitCodeID")
+                        .HasColumnType("int");
+
                     b.Property<decimal?>("UnitPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(10,4)");
 
                     b.Property<decimal?>("UnitsInStock")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(10,4)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("VendorId")
+                        .HasColumnName("VendorID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Volume")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BrandId");
+
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.HasIndex("CurrencyId");
+
+                    b.HasIndex("UnitCodeId");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Role", b =>
@@ -586,6 +721,15 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnName("BillToAddressID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("NetAmount")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
@@ -599,7 +743,10 @@ namespace EasyCRM.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Total")
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal>("TotalDiscount")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -613,7 +760,7 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("ShipToAddressId");
 
-                    b.ToTable("SalesOrders");
+                    b.ToTable("SalesOrder");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.SalesOrderLine", b =>
@@ -622,19 +769,27 @@ namespace EasyCRM.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("SalesOrderId")
+                        .HasColumnName("SalesOrderID")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("decimal(10,4)");
+
+                    b.Property<decimal>("DiscountRate")
+                        .HasColumnType("decimal(10,2)");
+
                     b.Property<int>("ProductId")
+                        .HasColumnName("ProductID")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(10,4)");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(10,2)");
+                        .HasColumnType("decimal(10,4)");
 
                     b.HasKey("Id", "SalesOrderId");
 
@@ -642,7 +797,52 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasIndex("SalesOrderId");
 
-                    b.ToTable("SalesOrderLines");
+                    b.ToTable("SalesOrderLine");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.Tax", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Percent")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<string>("TaxCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tax");
+                });
+
+            modelBuilder.Entity("EasyCRM.Entity.Models.UnitCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UnitCode");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.User", b =>
@@ -861,6 +1061,21 @@ namespace EasyCRM.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EasyCRM.Entity.Models.AccountGroup", b =>
+                {
+                    b.HasOne("EasyCRM.Entity.Models.Account", "Account")
+                        .WithMany("AccountGroups")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyCRM.Entity.Models.Group", "Group")
+                        .WithMany("AccountGroups")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("EasyCRM.Entity.Models.Address", b =>
                 {
                     b.HasOne("EasyCRM.Entity.Models.Account", "Account")
@@ -882,7 +1097,9 @@ namespace EasyCRM.Data.Migrations
 
                     b.HasOne("EasyCRM.Entity.Models.CommunicationType", "CommunicationType")
                         .WithMany()
-                        .HasForeignKey("CommunicationTypeId");
+                        .HasForeignKey("CommunicationTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("EasyCRM.Entity.Models.Contact", "Contact")
                         .WithMany("CommunicationInfos")
@@ -939,6 +1156,25 @@ namespace EasyCRM.Data.Migrations
                         .HasForeignKey("IndustryId");
                 });
 
+            modelBuilder.Entity("EasyCRM.Entity.Models.Media", b =>
+                {
+                    b.HasOne("EasyCRM.Entity.Models.Account", "Account")
+                        .WithMany("Photos")
+                        .HasForeignKey("AccountId");
+
+                    b.HasOne("EasyCRM.Entity.Models.Brand", "Brand")
+                        .WithMany("Medias")
+                        .HasForeignKey("BrandId");
+
+                    b.HasOne("EasyCRM.Entity.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId");
+
+                    b.HasOne("EasyCRM.Entity.Models.Product", "Product")
+                        .WithMany("Photos")
+                        .HasForeignKey("ProductId");
+                });
+
             modelBuilder.Entity("EasyCRM.Entity.Models.Opportunity", b =>
                 {
                     b.HasOne("EasyCRM.Entity.Models.Account", "Account")
@@ -963,11 +1199,33 @@ namespace EasyCRM.Data.Migrations
 
             modelBuilder.Entity("EasyCRM.Entity.Models.Product", b =>
                 {
+                    b.HasOne("EasyCRM.Entity.Models.Brand", "Brand")
+                        .WithMany()
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("EasyCRM.Entity.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("EasyCRM.Entity.Models.Currency", "Currency")
+                        .WithMany()
+                        .HasForeignKey("CurrencyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyCRM.Entity.Models.UnitCode", "UnitCode")
+                        .WithMany()
+                        .HasForeignKey("UnitCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EasyCRM.Entity.Models.Account", "Vendor")
+                        .WithMany()
+                        .HasForeignKey("VendorId");
                 });
 
             modelBuilder.Entity("EasyCRM.Entity.Models.SalesOrder", b =>

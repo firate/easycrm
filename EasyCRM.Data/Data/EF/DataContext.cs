@@ -17,26 +17,34 @@ namespace EasyCRM.Data.EF
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Address> Addresses { get; set; }
-        public DbSet<AccountType> AccountTypes { get; set; }
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<Category> Categories { get; set; }
-        public DbSet<CommunicationInfo> CommunicationInfos { get; set; }
-        public DbSet<CommunicationType> CommunicationTypes { get; set; }
-        public DbSet<Contact> Contacts { get; set; }
-        public DbSet<Country> Countries { get; set; }
-        public DbSet<Industry> Industries { get; set; }
-        public DbSet<Lead> Leads { get; set; }
-        public DbSet<Opportunity> Opportunities { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<SalesOrder> SalesOrders { get; set; }
-        public DbSet<SalesOrderLine> SalesOrderLines { get; set; }
+        public DbSet<Account> Account { get; set; }
+        public DbSet<Group> Group { get; set; }
+        public DbSet<Address> Address { get; set; }
+        public DbSet<AccountType> AccountType { get; set; }
+        public DbSet<Brand> Brand { get; set; }
+        public DbSet<Category> Category { get; set; }
+        public DbSet<CommunicationInfo> CommunicationInfo { get; set; }
+        public DbSet<CommunicationType> CommunicationType { get; set; }
+        public DbSet<Contact> Contact { get; set; }
+        public DbSet<Country> Country { get; set; }
+        public DbSet<Currency> Currency { get; set; }
+        public DbSet<Currency> CurrencyRate { get; set; }
+        public DbSet<Currency> CurrencyRateType { get; set; }
+        public DbSet<Industry> Industry { get; set; }
+        public DbSet<Lead> Lead { get; set; }
+        public DbSet<Media> Media { get; set; }
+        public DbSet<Opportunity> Opportunity { get; set; }
+        public DbSet<Product> Product { get; set; }
+        public DbSet<SalesOrder> SalesOrder { get; set; }
+        public DbSet<SalesOrderLine> SalesOrderLine { get; set; }
+        public DbSet<UnitCode> UnitCode { get; set; }
+        public DbSet<Tax> Tax { get; set; }
+        public DbSet<AccountGroup> AccountGroup { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-           
+
 
             modelBuilder.Entity<UserRole>(entity =>
             {
@@ -47,6 +55,21 @@ namespace EasyCRM.Data.EF
                 entity.HasOne(e => e.User)
                 .WithMany(e => e.UserRoles)
                 .HasForeignKey(e => e.UserId);
+            });
+
+            modelBuilder.Entity<AccountGroup>()
+                .HasKey(ac => new { ac.AccountId,ac.GroupId });
+
+            modelBuilder.Entity<AccountGroup>(entity=> 
+            {
+                entity.HasOne(e => e.Account)
+                    .WithMany(e => e.AccountGroups)
+                    .HasForeignKey(e => e.AccountId);
+
+                entity.HasOne(e => e.Group)
+                    .WithMany(e => e.AccountGroups)
+                    .HasForeignKey(e => e.GroupId);
+            
             });
 
             modelBuilder.Entity<SalesOrder>(entity =>
@@ -137,58 +160,58 @@ namespace EasyCRM.Data.EF
                 }
                 );
 
-            modelBuilder.Entity<Account>().HasData(
-                new Account
-                {
-                    AccountId = 1,
-                    AccountTypeId = 1,
-                    OrganizationName = "Microsoft",
-                    Description = "uuu",
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
+            //modelBuilder.Entity<Account>().HasData(
+            //    new Account
+            //    {
+            //        AccountId = 1,
+            //        AccountTypeId = 1,
+            //        OrganizationName = "Microsoft",
+            //        Description = "uuu",
+            //        CreatedAt = DateTime.Now,
+            //        UpdatedAt = DateTime.Now
 
-                }
-                );
+            //    }
+            //    );
 
-            modelBuilder.Entity<Address>().HasData(
-                new Address
-                {
-                    Id=1,
-                    AccountId=1,
-                    CountryId=1,
-                    IsMain=true
-                }
-                );
+            //modelBuilder.Entity<Address>().HasData(
+            //    new Address
+            //    {
+            //        Id=1,
+            //        AccountId=1,
+            //        CountryId=1,
+            //        IsMain=true
+            //    }
+            //    );
 
-            modelBuilder.Entity<CommunicationType>().HasData( 
-                new CommunicationType 
-                { 
-                    Id=1,
-                    Name="email",
-                    Description="E-Mail"
-                },
+            //modelBuilder.Entity<CommunicationType>().HasData( 
+            //    new CommunicationType 
+            //    { 
+            //        Id=1,
+            //        Name="email",
+            //        Description="E-Mail"
+            //    },
 
-                new CommunicationType
-                {
-                    Id = 2,
-                    Name = "phone",
-                    Description = "Phone"
-                },
+            //    new CommunicationType
+            //    {
+            //        Id = 2,
+            //        Name = "phone",
+            //        Description = "Phone"
+            //    },
 
-                new CommunicationType
-                {
-                    Id = 3,
-                    Name = "fax",
-                    Description = "Fax"
-                },
-                new CommunicationType
-                {
-                    Id = 4,
-                    Name = "www",
-                    Description = ""
-                }
+            //    new CommunicationType
+            //    {
+            //        Id = 3,
+            //        Name = "fax",
+            //        Description = "Fax"
+            //    },
+            //    new CommunicationType
+            //    {
+            //        Id = 4,
+            //        Name = "www",
+            //        Description = ""
+            //    }
 
-                );
+            //    );
 
             
         }
