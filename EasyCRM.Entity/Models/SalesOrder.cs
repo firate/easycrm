@@ -28,8 +28,17 @@ namespace EasyCRM.Entity.Models
         public Account Account { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
-        public decimal Total { get; set; }
-        
+        public decimal GrossAmount { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal NetAmount { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TaxAmount { get; set; }
+
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal TotalDiscount { get; set; }
+
         public SalesOrderStatus Status { get; set; }
 
         public List<SalesOrderLine> OrderLines { get; set; }
@@ -50,6 +59,7 @@ namespace EasyCRM.Entity.Models
 
         public DateTime OrderDate { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 

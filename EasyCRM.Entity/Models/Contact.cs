@@ -40,6 +40,8 @@ namespace EasyCRM.Entity.Models
         [ForeignKey(nameof(AccountId))]
         public Account Account { get; set; }
 
+        public bool? IsPrincipalContact { get; set; }
+
         public List<OpportunityContact> OpportunityContacts { get; set; }
 
         public string Notes { get; set; }

@@ -10,11 +10,14 @@ namespace EasyCRM.Entity.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public CommunicationType CommunicationType { get; set; }
         public string Value { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        [Column("CommunicationTypeID")]
+        public int CommunicationTypeId { get; set; }
+        public CommunicationType CommunicationType { get; set; }
 
         [Column("AccountID")]
         public int? AccountId { get; set; }
